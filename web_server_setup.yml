@@ -1,0 +1,30 @@
+---
+- name: Web Server setup
+  hosts: all
+  become: yes
+  tasks:
+    - name: install nginx
+      apt: 
+       name: nginx
+       state: present
+       update_cache: yes
+
+    - name: start and enable nginx
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Deploy a custom web page
+      copy:
+        dest: /var/www/html/index.html
+        content: |
+          <html>
+          <head><title>Welcome</title></head>
+          <body>
+            <h1>Hello, I am Swati Gupta!</h1>
+            <p>Welcome to my Ansible Project 2 - Web Server Setup 🚀</p>
+          </body>
+          </html>
+           
+
