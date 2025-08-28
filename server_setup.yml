@@ -1,0 +1,26 @@
+---
+- name: Basic server setup 
+  hosts: all
+  become: yes
+  tasks:
+    - name: install required packages
+      apt:
+        name: 
+          - vim 
+          - git
+          - curl
+        state: present
+        update_cache: yes
+
+    - name: create new user
+      user:
+        name: devops
+        state: present
+        groups: sudo 
+        create_home: yes
+        shell: /bin/bash
+
+    - name: Set host name
+      hostname:
+       name: devops-server
+
