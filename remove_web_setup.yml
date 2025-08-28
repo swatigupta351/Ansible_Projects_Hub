@@ -1,0 +1,22 @@
+---
+- name: remove web setup
+  hosts: all
+  become: yes
+  tasks:
+    - name: stop nginx service
+      service:
+        name: nginx
+        state: stopped
+      ignore_errors: yes
+
+    - name: remove nginx
+      apt:
+        name: nginx
+        state: absent
+        purge: yes
+
+    - name: remove unused dependencies
+      apt:
+       autoremove: yes 
+
+
