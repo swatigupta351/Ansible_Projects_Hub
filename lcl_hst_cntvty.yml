@@ -1,0 +1,13 @@
+---
+  - name: First basic Playbook for local host connectivity
+    hosts: localhost
+
+    tasks:
+
+    - name: Test Connectivity 
+
+      ping:
+
+    - name: "Print Output"
+
+      debug: msg="Hello Swati"
