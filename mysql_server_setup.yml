@@ -1,0 +1,78 @@
+---
+- name: MySQL database server setup
+  hosts: db
+  become: yes
+  vars:
+
+    mysql_root_password: "rootpass123"
+    db_name: "myappdb"
+    db_user: "appuser"
+    db_password: "appuser123"
+
+  tasks:
+  - name: install mysqlserver
+    apt:
+      name: mysql-server
+      state: present
+      update_cache: yes
+
+  - name: start and enabled mysql service
+    service:
+      name: mysql
+      state: started
+      enabled: yes
+
+  - name: install python 3 mysql dependencies
+    apt:
+      name: python3-pymysql
+      state: present
+  
+  - name: set mysql root password
+    mysql_user:
+      name: root
+      host: localhost
+      password: "{{ mysql_root_password }}"
+      login_unix_socket: /var/run/mysqld/mysqld.sock
+      
+
+  - name: create a new database
+    mysql_db:
+      name: "{{  db_name  }}"
+      state: present
+      login_user: root
+      login_password: "{{ mysql_root_password }}"
+
+  - name: create new user with password
+    mysql_user:
+      name: "{{ db_user }}"
+      password: "{{ db_password }}"
+      priv: "{{ db_name }}.*:ALL"
+      state: present
+      login_user: root
+      login_password: "{{ mysql_root_password }}"
+ 
+  - name: Allow mysql to listen on all ips
+    lineinfile:
+      path: /etc/mysql/mysql.conf.d/mysqld.cnf
+      regexp: '^bind-address'
+      line: 'bind-address = 0.0.0.0'
+    notify: Restart MySQL
+
+  - name: Allow traffic on 3306
+    ufw:
+      rule: allow
+      port: 3306
+      proto: tcp
+
+  handlers:
+    - name: Restart MySQL
+      service:
+        name: mysql
+        state: restarted
+   
+
+
+
+       
+
+
