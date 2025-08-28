@@ -1,0 +1,41 @@
+--- 
+- name: Set up web server with an application ( to connect a Database)
+  hosts: web
+  become: yes
+  vars:
+   
+    db_host: "{{ groups['db'][0] }}"
+    db_name: "myappdb"
+    db_user: "appuser"
+    db_password: "appuser123"
+  
+  tasks:
+  - name: install nginx and PHP 
+    apt:
+      name: 
+       - nginx
+       - php-fpm
+       - php-mysql
+      state: present
+      update_cache: yes
+
+  - name: Start and enable service
+    service:
+      name: nginx
+      state: started
+      enabled: yes
+
+  - name: Deploy a sample php app
+    copy:
+      dest: /var/www/html/index.php
+      content: |
+        <?php
+          $conn = new mysqli("{{ db_host }}", "{{ db_user }}", "{{ db_password }}", "{{ db_name }}");
+          if ($conn->connect_error) {
+              die("Connection failed: " . $conn->connect_error);
+          }
+          echo "<h1>Connected successfully to MySQL!</h1>";
+          ?>
+
+
+
