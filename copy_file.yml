@@ -1,0 +1,14 @@
+---
+- name: Copy file from local host to remote host.
+  hosts: all
+  tasks:
+
+  - name: Copy file
+    copy:
+      src: /home/swati_gupta/file.txt
+      dest: /home/ubuntu/test
+      owner: ubuntu
+      group: ubuntu
+      mode: 400 or ugo=rw
+      backup: True
+
