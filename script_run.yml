@@ -1,0 +1,6 @@
+---
+- name: run a script
+  hosts: all
+  tasks: 
+   - name: run a script
+     shell: /home/ubuntu/script.sh
